@@ -1,0 +1,26 @@
+default:
+  outputs:
+
+    dev:
+      type: bigquery
+      method: oauth
+      project: XXXXXXXXXXX
+      dataset: XXXXXXXXXXX
+      threads: 10
+      timeout_seconds: 300
+      location: XXXXXXXXXXX
+      priority: interactive
+      retries: 1
+
+    prod:
+      type: bigquery
+      method: service-account
+      project: XXXXXXXXXXX
+      dataset: preprod
+      threads: 10
+      keyfile: ./resources/service-account.json
+      timeout_seconds: 300
+      priority: interactive
+      retries: 1
+
+  target: prod

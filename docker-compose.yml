@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  dbt:
+    image: dbt_plateform
+    container_name: dbt_p
+    build:
+      context: .
+      dockerfile: Dockerfile_dev
+    volumes:
+      - ./source/analysis:/source/analysis
+      - ./source/data:/source/data
+      - ./source/macros:/source/macros
+      - ./source/models:/source/models
+      - ./source/profiles:/source/profiles
+    ports:
+      - "8001:8001"
+    command: dbt deps && dbt debug && dbt docs generate

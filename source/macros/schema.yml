@@ -1,0 +1,28 @@
+version: 2
+
+macros:
+  - name: generate_schema_name
+    description: A macro to determine the name of the schema that a model should be built in DBT when it write in BigQuery.
+    arguments:
+      - name: custom_schema_name
+        type: string
+        description: The configured value of schema in the specified node, or none if a value is not supplied. This is Dataset Id target in BigQuery. 
+      - name: Node
+        type: string
+        description: The node that is currently being processed by dbt
+  - name: get_schema_from_env
+    description: A macro to get schema according to var env_dbt if prod or dev.
+    arguments:
+      - name: dataset_id_target
+        type: string
+        description: Dataset Id target for BigQuery.
+  - name: get_current_date
+    description: A macro to get current date send by Airflow to stock in Table.
+  - name: get_begin_date
+    description: A macro to get first date in query send by Airflow to stock in Table.
+  - name: get_end_date
+    description: A macro to get end date in query send by Airflow to stock in Table.
+
+
+
+

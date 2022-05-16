@@ -1,0 +1,52 @@
+# build site
+FROM python:3.9 as dbt_site_builder
+
+RUN mkdir source
+COPY source/requirements.txt source/requirements.txt
+COPY source/profiles/big_query/profiles.yml /root/.dbt/profiles.yml
+COPY source/dbt_project_dev.yml source/dbt_project.yml
+COPY source/packages.yml source/packages.yml
+COPY source/resources/service-account.json source/resources/service-account.json
+
+# install dbt
+ENV DBT_VERSION=1.0.0
+
+RUN apt-get update -y && \
+    apt-get install --no-install-recommends -y -q \
+    git libpq-dev python-dev
+
+# Set environment variables and working directory
+# Python Dépendancy
+ENV DBT_DIR /source
+WORKDIR $DBT_DIR
+
+# RUN --mount=target=/source,type=bind,source=source
+# RUN --mount=target=/source/analysis,type=bind,source=source
+# RUN --mount=target=/source/data,type=bind,source=source
+# RUN --mount=target=/source/macros,type=bind,source=source
+# RUN --mount=target=/source/models,type=bind,source=source
+# RUN --mount=target=/source/profiles,type=bind,source=source
+
+# RUN --mount=target=/resources,type=bind,source=resources \
+# pip install --upgrade pip && \
+# pip install --no-cache-dir -r requirements.txt && \
+# dbt deps && \
+# dbt debug && \
+# dbt docs generate
+
+ENV DBT_PROFILES_DIR /root/.dbt/
+
+# Python Dépendancy
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+# pull dbt dependencies
+RUN dbt deps
+
+# build static pages
+RUN dbt debug
+RUN dbt docs generate
+
+# RUN dbt run
+ENTRYPOINT [ "dbt"]
